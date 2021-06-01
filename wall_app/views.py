@@ -8,7 +8,8 @@ def my_wall(request):
 
     context = {
         "user_info": User.objects.get(id=request.session["userid"]),
-        'all_messages': messages_by_user,
+        "all_messages": Message.objects.all(),
+        'all__user_messages': messages_by_user,
         'all_comments': comments_by_user
     }
     return render(request, "my-wall.html", context)
