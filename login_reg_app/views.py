@@ -23,6 +23,7 @@ def log_in(request):
                 logged_in_user = user[0]
                 if bcrypt.checkpw(request.POST["password"].encode(), logged_in_user.password.encode()):
                     request.session['userid'] = logged_in_user.id
+                    request.session['user'] = logged_in_user.first_name
 
                     return redirect('/wall')
                 else:
@@ -47,7 +48,7 @@ def reg_me(request):
         password = request.POST['password']
         pw_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
-        User.objects.create(
+        new_user = User.objects.create(
             first_name = request.POST["first_name"],
             last_name = request.POST["last_name"],
             email = request.POST["email"],
@@ -55,6 +56,8 @@ def reg_me(request):
             password = pw_hash
         )
 
+        request.session["user"] = new_user.first_name
+        request.session["userid"] = new_user.id
         return redirect('/')
 
 def success(request):

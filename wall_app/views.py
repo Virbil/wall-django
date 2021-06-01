@@ -23,10 +23,10 @@ def new_message(request):
         )
         return redirect('/wall')
 
-def new_comment(request):
+def new_comment(request, id):
     if request.method == "POST":
         logged_user = User.objects.get(id=request.session["userid"])
-        messages = Message.objects.filter(user=logged_user)
+        messages = Message.objects.get(id=id)
 
         Comment.objects.create(
             comment=request.POST["comment"],
@@ -34,3 +34,16 @@ def new_comment(request):
             message=messages
         )
         return redirect('/wall')
+
+def edit_comment(request, id):
+    edit_user = User.objects.get(id=id)
+    edit_user.first_name = request.POST['first_name']
+    edit_user.last_name = request.POST['last_name']
+    edit_user.email = request.POST['email']
+    edit_user.save()
+    return redirect('/wall')
+
+def delete_comment(request, id):
+    delete_comment = Comment.objects.get(id=id)
+    delete_comment.delete()
+    return redirect('/wall')
